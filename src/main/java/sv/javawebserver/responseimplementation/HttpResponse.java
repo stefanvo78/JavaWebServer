@@ -11,6 +11,7 @@ public class HttpResponse implements IHttpResponse {
 	private HttpHeaders headers;
 	private String body;
 	private String httpVersion;
+	private InputStream stream;
 
 	HttpResponse(HttpStatus status, String httpVersion) {
 		this(status, new HttpHeaders(), "", httpVersion);
@@ -21,6 +22,7 @@ public class HttpResponse implements IHttpResponse {
 		this.headers = headers;
 		this.body = body;
 		this.httpVersion = httpVersion;
+		this.stream =  new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
 	}
 
 	public HttpResponse(HttpStatus status, String body, String httpVersion) {
@@ -31,13 +33,17 @@ public class HttpResponse implements IHttpResponse {
 		this.status = status;
 		this.body = body;
 		this.httpVersion = httpVersion;
+		this.stream =  new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
 
 		
 	}
 
+	public void setStream(InputStream stream) {
+		this.stream = stream;
+	}
 	@Override
 	public InputStream stream() {
-		return new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+		return this.stream;
 	}
 
 	@Override

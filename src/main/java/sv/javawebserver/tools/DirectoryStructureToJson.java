@@ -50,6 +50,7 @@ public class DirectoryStructureToJson{
         private String type;
         private List<Node> nodeList;
 
+        
         public Node() { }
 
         public Node(String name, String location, String type, List<Node> nodeList) {

@@ -1,7 +1,9 @@
 package sv.javawebserver.requesthandlerimplementation;
 
 import java.io.File;
-
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import sv.javawebserver.responseimplementation.*;
 import sv.javawebserver.api.*;
@@ -9,6 +11,7 @@ import sv.javawebserver.headerimplementation.*;
 import sv.javawebserver.requestimplementation.*;
 import sv.javawebserver.api.IHttpRequestHandler;
 import sv.javawebserver.tools.*;
+import org.apache.tika.Tika;
 
 public class FileRequestHandler implements IHttpRequestHandler{
     
@@ -43,23 +46,32 @@ public class FileRequestHandler implements IHttpRequestHandler{
 
     private IHttpResponse handleFile(IHttpRequest request,File requestedFile){
         HttpStatus status = HttpStatus.OK_200;
-        String body = "<h1>Test Filehandler</h1>";
-
-
-        //headers().set("Content-length", String.valueOf(file.length()));
-        //headers().set("Content-type", contentType(file));
-
-        String length = String.valueOf(body.length());
+      
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-length", String.valueOf(body.length()));
-        headers.set("Content-type", "text/html");
-        
-        // HttpHeaders headers = new HttpHeaders(new HttpHeader("Content-length",length));
-        // headers.set("Content-type","text/html" );
+        headers.set("Content-length", String.valueOf( requestedFile.length()));
 
-        HttpResponse response = new HttpResponse(status, headers, body, request.httpVersion());
+        try {
+			headers.set("Content-type", getContentType(requestedFile));
+		} catch (IOException e) {
+			//throw new ResponseException("Failed to detect MIME type of " + file.getPath(), e);
+		}
+        
+
+        HttpResponse response = new HttpResponse(status, headers, "", request.httpVersion());
+        try {
+            response.setStream(new FileInputStream(requestedFile));
+		} catch (FileNotFoundException e) {
+			//throw new ResponseException("Requested file does not exist", e);
+		}
+       
         return response;
     }
+
+    private String getContentType(File file)throws IOException{
+		Tika tika = new Tika();
+		return tika.detect(file);
+    }
+    
     private IHttpResponse handleDirectory(IHttpRequest request,File requestedFile){
         HttpStatus status = HttpStatus.OK_200;
         String body = listDirectories(requestedFile);
