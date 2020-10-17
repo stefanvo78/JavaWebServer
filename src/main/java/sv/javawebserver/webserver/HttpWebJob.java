@@ -11,8 +11,8 @@ import sv.javawebserver.requestimplementation.*;
 import sv.javawebserver.api.*;
 import sv.javawebserver.headerimplementation.*;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+// import org.apache.logging.log4j.LogManager;
+// import org.apache.logging.log4j.Logger;
 import org.apache.commons.io.IOUtils;
 import java.util.List;
 import com.google.common.base.Strings;
@@ -21,7 +21,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
 public class HttpWebJob implements Runnable {
-	private static final Logger logger = LogManager.getLogger("HttpWebJob");
+	// private static final Logger logger = LogManager.getLogger("HttpWebJob");
 	private final HttpResponseFactory responseFactory;
 	private final Socket socket;
 	private boolean keepAlive = false;
@@ -55,12 +55,9 @@ public class HttpWebJob implements Runnable {
 			outputStream = socket.getOutputStream();
 			responseWriter = new HttpResponseWriter(outputStream);
 		} catch (IOException e) {
-			logger.error("Client Connetion failed", e);
+			// logger.error("Client Connetion failed", e);
 			return;
 		}
-
-		// RequestReader requestReader = new RequestReader(inputStream);
-		// ResponseWriter responseWriter = new ResponseWriter(outputStream);
 
 		while (keepAlive) {
 
@@ -90,7 +87,7 @@ public class HttpWebJob implements Runnable {
 		try {
 			responseWriter.writeResponse(response);
 		} catch (HttpException e) {
-			logger.error("Unable to write Response", e);
+			// logger.error("Unable to write Response", e);
 		}
 	}
 
@@ -98,7 +95,7 @@ public class HttpWebJob implements Runnable {
 		try {
 			return responseFactory.response(request);
 		} catch (Exception e) {
-			logger.error("Error generating response message", e);
+			// logger.error("Error generating response message", e);
 			return errorResponseFactory.getErrorResponse("INTERNAL_SERVER_ERROR_500");
 		}
 	}
@@ -119,7 +116,7 @@ public class HttpWebJob implements Runnable {
 
 			return httpRequest;
 		} catch (Exception e) {
-			logger.error("Unable to parse input stream into a Request object.");
+			// logger.error("Unable to parse input stream into a Request object.");
 			throw new HttpException("Unable to parse input stream into a Request object.", e);
 		}
 	}
@@ -127,7 +124,6 @@ public class HttpWebJob implements Runnable {
 	private HttpHeaders readHeaders(BufferedReader inputReader) throws IOException {
 		HttpHeaders headers = new HttpHeaders();
 
-		// Subsequent lines are request headers until a blank line is encountered
 		if (inputReader.ready()) {
 			String line = inputReader.readLine();
 			while (line != null && !"".equals(line)) {
@@ -164,7 +160,7 @@ public class HttpWebJob implements Runnable {
 		try {
 			socket.close();
 		} catch (IOException e) {
-			logger.error("Failure on closing connection", e);
+			// logger.error("Failure on closing connection", e);
 		}
 	}
 

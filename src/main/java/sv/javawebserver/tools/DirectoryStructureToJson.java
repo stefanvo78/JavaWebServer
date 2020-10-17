@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DirectoryStructureToJson{
@@ -29,19 +30,17 @@ public class DirectoryStructureToJson{
     }
 
     public static Node getNode(File node){
-        if(node.isDirectory()){
-            return new Node(node.getName(),node.getAbsolutePath(),"directory", getDirList( node));
-        }else{
-            return new Node(node.getName(),node.getAbsolutePath(),"file",null);
-        }
+        return node.isDirectory() ?
+            new Node(node.getName(),node.getAbsolutePath(),"directory", getDirList( node)) :
+                new Node(node.getName(),node.getAbsolutePath(),"file",null);
     }
 
 
     public static List<Node> getDirList(File node){
         List<Node> nodeList=new ArrayList<>();
-        for(File n : node.listFiles()){
-            nodeList.add(getNode(n));
-        }
+
+        Arrays.stream(node.listFiles()).forEach(item -> nodeList.add(getNode(item)));
+    
         return nodeList;
     }
 

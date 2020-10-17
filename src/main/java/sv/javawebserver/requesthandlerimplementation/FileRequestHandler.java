@@ -25,16 +25,13 @@ public class FileRequestHandler implements IHttpRequestHandler{
     
     @Override
     public IHttpResponse handleRequest(IHttpRequest request) {
-        File requestedFile = new File(this.path);
+        File requestedFile = new File(this.path, request.uri().toString());
 
         IHttpResponse response;
 
-        if ( !requestedFile.exists())
-        {
+        if ( !requestedFile.exists()) {
             return new HttpErrorResponseFactory().getErrorResponse("NOT_FOUND_404");
-        }
-        else if ( requestedFile.isDirectory())
-        {
+        } else if ( requestedFile.isDirectory()) {
             response = handleDirectory(request, requestedFile);
         }
         else{
