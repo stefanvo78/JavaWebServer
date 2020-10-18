@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import sv.javawebserver.responseimplementation.*;
 import sv.javawebserver.api.*;
 import sv.javawebserver.headerimplementation.*;
@@ -14,7 +15,7 @@ import sv.javawebserver.tools.*;
 import org.apache.tika.Tika;
 
 public class FileRequestHandler implements IHttpRequestHandler{
-    
+    private static final Logger logger = LogManager.getLogger("FileRequestHandler");
     String path;
     
     public FileRequestHandler(String path ){
@@ -46,14 +47,14 @@ public class FileRequestHandler implements IHttpRequestHandler{
 
     private IHttpResponse handleFile(IHttpRequest request,File requestedFile){
         HttpStatus status = HttpStatus.OK_200;
-      
+        logger.info("handleFile " + requestedFile.getName());
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-length", String.valueOf( requestedFile.length()));
 
         try {
 			headers.set("Content-type", getContentType(requestedFile));
 		} catch (IOException e) {
-			//throw new ResponseException("Failed to detect MIME type of " + file.getPath(), e);
+            logger.error("Failed to detect MIME type of " + requestedFile.getPath(), e);
 		}
         
 
@@ -61,7 +62,8 @@ public class FileRequestHandler implements IHttpRequestHandler{
         try {
             response.setStream(new FileInputStream(requestedFile));
 		} catch (FileNotFoundException e) {
-			//throw new ResponseException("Requested file does not exist", e);
+            logger.error("Requested file does not exist", e);
+			
 		}
        
         return response;
@@ -74,9 +76,9 @@ public class FileRequestHandler implements IHttpRequestHandler{
     
     private IHttpResponse handleDirectory(IHttpRequest request,File requestedFile){
         HttpStatus status = HttpStatus.OK_200;
+        logger.info("handleDirectory " + requestedFile.getPath());
         String body = listDirectories(requestedFile);
-
-
+        logger.info("handleDirectory body: " + body);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-length", String.valueOf(body.length()));
         headers.set("Content-type", "application/json");

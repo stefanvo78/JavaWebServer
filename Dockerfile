@@ -5,15 +5,16 @@ ADD ./src src/
 RUN mvn clean package
 
 # runtime - build final runtime image
-FROM adoptopenjdk/openjdk11:ubi
+FROM adoptopenjdk/openjdk11
 
 
 # add the application's jar to the container
-COPY --from=build-env target/javawebserver-1.0.jar app.jar
+COPY --from=build-env target/javawebserver-1.0-jar-with-dependencies.jar app.jar
 
-CMD ["java", "-jar", "/opt/app/javawebserver.jar"]
+COPY src/webserverfolder /webserverfolder
 
 
 # run application
-EXPOSE $PORT
-ENTRYPOINT ["java","-jar","app.jar"]
+EXPOSE 80
+ENTRYPOINT ["java","-jar","app.jar", "webserverfolder"]
+

@@ -4,13 +4,15 @@ package sv.javawebserver.tools;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class DirectoryStructureToJson{
-
+    private static final Logger logger = LogManager.getLogger("DirectoryStructureToJson");
     private File file;
     public DirectoryStructureToJson (File file)
     {
@@ -23,6 +25,7 @@ public class DirectoryStructureToJson{
         try {
             jsonInString =  new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(getNode(this.file));
         } catch (JsonProcessingException e) {
+            logger.error("Error in retrieving Directory Strucutre As Json", e);
             e.printStackTrace();
         }
 

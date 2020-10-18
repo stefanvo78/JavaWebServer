@@ -8,6 +8,8 @@ import sv.javawebserver.responseimplementation.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.io.IOException;
 
 public class HttpWebServer {
-   // private static final Logger logger = LogManager.getLogger("HttpWebServer");
+   private static final Logger logger = LogManager.getLogger("HttpWebServer");
 
    private final HttpResponseFactory responseFactory;
    private HttpWebServerConfiguration webserverConfiguration;
@@ -42,14 +44,14 @@ public class HttpWebServer {
 
          serverSocket.setSoTimeout(1000);
 
-         // logger.info("Started server on port {}", serverSocket.getLocalPort());
+         logger.info("Started server on port {}", serverSocket.getLocalPort());
 
          while (running) {
             executeRequest(serverSocket);
          }
 
       } catch (IOException e) {
-         // logger.warn("Error on Connection.", e);
+         logger.warn("Error on Connection.", e);
          stop();
       }
    }
@@ -57,17 +59,17 @@ public class HttpWebServer {
    public void stop() {
       running = false;
 
-      // logger.info("Stop server");
+      logger.info("Stop server");
 
       try {
          threadPool.shutdown();
          threadPool.awaitTermination(webserverConfiguration.timeoutInSecs(), TimeUnit.SECONDS);
       } catch (InterruptedException e) {
-         // logger.error("Error on Stopping Server.", e);
+         logger.error("Error on Stopping Server.", e);
          Thread.currentThread().interrupt();
       }
 
-      // logger.info("Server Stopped.");
+      logger.info("Server Stopped.");
    }
 
    private void executeRequest(ServerSocket serverSocket) throws IOException {
