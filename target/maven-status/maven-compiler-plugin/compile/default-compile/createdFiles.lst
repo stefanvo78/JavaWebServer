@@ -15,7 +15,9 @@ sv\javawebserver\requestimplementation\HttpRequest.class
 sv\javawebserver\api\HttpException.class
 sv\javawebserver\api\IHttpRequestHandler.class
 sv\javawebserver\headerimplementation\HttpHeader.class
+sv\javawebserver\tools\DirectoryStructureToJson$Node.class
 sv\javawebserver\responseimplementation\HttpErrorResponse.class
 sv\javawebserver\api\HttpStatus.class
 sv\javawebserver\webserver\HttpWebJob.class
 sv\javawebserver\responseimplementation\HttpResponseFactory.class
+sv\javawebserver\tools\DirectoryStructureToJson.class

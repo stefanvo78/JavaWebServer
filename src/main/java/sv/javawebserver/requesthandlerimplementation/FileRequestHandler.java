@@ -60,7 +60,9 @@ public class FileRequestHandler implements IHttpRequestHandler{
 
         HttpResponse response = new HttpResponse(status, headers, "", request.httpVersion());
         try {
-            response.setStream(new FileInputStream(requestedFile));
+            if ( request.method() != HttpMethod.HEAD){
+                response.setStream(new FileInputStream(requestedFile));
+            }
 		} catch (FileNotFoundException e) {
             logger.error("Requested file does not exist", e);
 			
